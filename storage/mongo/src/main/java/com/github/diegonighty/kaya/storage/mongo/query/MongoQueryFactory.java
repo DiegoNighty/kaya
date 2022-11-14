@@ -9,7 +9,7 @@ public class MongoQueryFactory implements QueryFactory {
 
     @Override
     public PrintableQuery create(RepositoryMethodElement methodElement) {
-        String methodName = methodElement.name().toString();
+        var methodName = methodElement.name().toString();
         String[] terms = methodName.split("_");
 
         if (terms.length < 2) {
@@ -18,9 +18,7 @@ public class MongoQueryFactory implements QueryFactory {
             );
         }
 
-        QueryContext context = new QueryContext(terms[0], terms[1]);
-
-        return new MongoPrintableQuery(context);
+        return new MongoPrintableQuery(new QueryContext(terms[0], terms[1]));
     }
 
 }

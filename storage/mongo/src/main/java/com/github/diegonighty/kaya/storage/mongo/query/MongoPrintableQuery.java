@@ -1,6 +1,5 @@
 package com.github.diegonighty.kaya.storage.mongo.query;
 
-import com.github.diegonighty.kaya.storage.processor.element.RepositoryMethodElement;
 import com.github.diegonighty.kaya.storage.query.PrintContext;
 import com.github.diegonighty.kaya.storage.query.PrintableQuery;
 import com.github.diegonighty.kaya.storage.query.QueryContext;
@@ -19,7 +18,7 @@ public record MongoPrintableQuery(QueryContext context) implements PrintableQuer
 
     @Override
     public void print(PrintContext ctx) {
-        RepositoryMethodElement method = ctx.method();
+        var method = ctx.method();
 
         ctx.printOverride()
                 .print("public").space()
@@ -40,7 +39,5 @@ public record MongoPrintableQuery(QueryContext context) implements PrintableQuer
                 .print("}")
                 .endLine()
                 .printTab();
-
-        System.out.println(ctx.builder());
     }
 }

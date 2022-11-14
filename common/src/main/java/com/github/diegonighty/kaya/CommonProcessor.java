@@ -13,7 +13,6 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
@@ -49,13 +48,13 @@ public abstract class CommonProcessor<A extends Annotation> extends AbstractProc
     }
 
     protected void copyFromTemplate(String template, String newName, BiConsumer<BufferedReader, PrintWriter> actions) {
-        try (InputStream templateStream = getClass().getClassLoader().getResourceAsStream(template)) {
+        try (var templateStream = getClass().getClassLoader().getResourceAsStream(template)) {
             if (templateStream == null) {
                 throw new RuntimeException("Template not found: " + template);
             }
 
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(templateStream))) {
-                try (PrintWriter writer = new PrintWriter(filer().createSourceFile(newName).openWriter())) {
+            try (var reader = new BufferedReader(new InputStreamReader(templateStream))) {
+                try (var writer = new PrintWriter(filer().createSourceFile(newName).openWriter())) {
                     actions.accept(reader, writer);
                 }
             }

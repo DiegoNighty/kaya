@@ -24,7 +24,7 @@ import java.util.Set;
 
 public abstract class RepositoryProcessor<T extends Annotation> extends CommonProcessor<T> {
 
-    private void handle0(CompletedRepositoryElement element, RoundEnvironment environment) {
+    private void handle0(CompletedRepositoryElement element) {
         var queryFactory = getFactory();
         var repositoryElement = element.repository();
 
@@ -69,7 +69,7 @@ public abstract class RepositoryProcessor<T extends Annotation> extends CommonPr
     @Override
     protected void handle(Set<? extends Element> elements, RoundEnvironment environment) {
         for (Element element : elements) {
-            handle0(completed(createRepository(element)), environment);
+            handle0(completed(createRepository(element)));
         }
     }
 
@@ -85,7 +85,7 @@ public abstract class RepositoryProcessor<T extends Annotation> extends CommonPr
     }
 
     private RepositoryMethodElement createRepositoryMethod(ExecutableElement element) {
-        TypeMirror returnType = element.getReturnType();
+        var returnType = element.getReturnType();
 
         if (!isAssignableWithoutWildcard(returnType, Mono.class) && !isAssignableWithoutWildcard(returnType, Flux.class)) {
             throw new IllegalArgumentException(element + " must return a Mono or Flux");
