@@ -1,0 +1,23 @@
+allprojects {
+    apply plugin: "java"
+
+    java {
+        toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation(libs.reactor.core)
+        testImplementation(testLibs.reactor.test)
+
+        testImplementation(testLibs.junit.api)
+        testRuntimeOnly(testLibs.junit.engine)
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}

@@ -1,0 +1,42 @@
+rootProject.name = 'kaya'
+
+dependencyResolutionManagement {
+    versionCatalogs {
+        def reactorVersion = "3.5.0"
+
+        libs {
+            // Reactive
+            library("reactor-core", "io.projectreactor", "reactor-core")
+                    .version(reactorVersion)
+
+            // Paper API
+            library("paper", "io.papermc.paper:paper-api:1.19.2-R0.1-SNAPSHOT")
+
+            // Mongo
+            library("mongo", "org.mongojack:mongojack:4.7.0")
+        }
+
+        testLibs {
+            // JUnit
+            version("junit5", "5.7.1")
+
+            library("junit-api", "org.junit.jupiter", "junit-jupiter-api")
+                    .versionRef("junit5")
+
+            library("junit-engine", "org.junit.jupiter", "junit-jupiter-engine")
+                    .versionRef("junit5")
+
+            // Reactive
+            library("reactor-test", "io.projectreactor", "reactor-test")
+                    .version(reactorVersion)
+        }
+    }
+}
+include 'storage'
+include 'storage:core'
+findProject(':storage:core')?.name = 'core'
+include 'storage:mongo'
+findProject(':storage:mongo')?.name = 'mongo'
+include 'common'
+include 'xd'
+

@@ -1,0 +1,9 @@
+dependencies {
+    implementation(project(":storage:mongo"))
+    annotationProcessor(project(":storage:mongo"))
+
+    implementation(project(":storage:core"))
+    annotationProcessor(project(":storage:core"))
+
+    implementation(libs.mongo)
+}
