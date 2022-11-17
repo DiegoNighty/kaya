@@ -11,33 +11,22 @@ public record MongoPrintableQuery(QueryContext context) implements PrintableQuer
     static final List<String> ACCEPTED_TYPES = List.of("find", "deleteOne", "deleteMany", "countDocuments", "replaceOne");
 
     public MongoPrintableQuery {
-        if (!ACCEPTED_TYPES.contains(context.type())) {
-            throw new IllegalArgumentException("Invalid type: " + context.type());
+        if (!ACCEPTED_TYPES.contains(context.method().value())) {
+            throw new IllegalArgumentException("Invalid type: " + context.method().value());
         }
     }
 
     @Override
     public void print(PrintContext ctx) {
-        var method = ctx.method();
-
         ctx.printOverride()
-                .print("public").space()
-                .print(method.returnType()).space()
-                .print(method.name())
-                .printParameters()
-                .space().print("{").endLine()
-                .printTab()
+                .printMethodDeclaration()
                 .startReturnMono()
-                .print(ctx.sourceVariable()).print(".").print(context.type())
+                .print(ctx.sourceVariable()).print(".").print(context.method().value())
                 .print("(")
-                .print("Filters.eq(").quote()
-                .print(context.field()).quote()
-                .print(", ")
-                .printParameterName(0)
-                .print("))")
+                .print(context.filter().value())
+                .print(")")
                 .endReturn()
                 .print("}")
-                .endLine()
                 .printTab();
     }
 }

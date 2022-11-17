@@ -92,9 +92,9 @@ public record PrintContext(RepositoryMethodElement method, StringBuilder builder
     }
 
     public PrintContext printOverride() {
-        printTab();
-        builder.append(OVERRIDE);
-        return endLine();
+        return endLine()
+                .print(OVERRIDE)
+                .endLine();
     }
 
     public PrintContext space() {

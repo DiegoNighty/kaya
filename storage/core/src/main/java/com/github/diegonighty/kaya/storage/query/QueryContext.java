@@ -1,3 +1,9 @@
 package com.github.diegonighty.kaya.storage.query;
 
-public record QueryContext(String type, String field) {}
+import com.github.diegonighty.kaya.storage.query.token.QueryToken;
+
+public record QueryContext(
+        QueryToken method,
+        QueryToken quantity,
+        QueryToken filter
+) {}
