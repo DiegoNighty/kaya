@@ -1,7 +1,7 @@
 package com.github.diegonighty.kaya.storage.mongo.query;
 
 import com.github.diegonighty.kaya.storage.processor.element.RepositoryMethodElement;
-import com.github.diegonighty.kaya.storage.query.PrintableQuery;
+import com.github.diegonighty.kaya.storage.query.io.PrintableQuery;
 import com.github.diegonighty.kaya.storage.query.QueryContext;
 import com.github.diegonighty.kaya.storage.query.QueryFactory;
 
@@ -11,6 +11,8 @@ public class MongoQueryFactory implements QueryFactory {
     public PrintableQuery create(RepositoryMethodElement methodElement) {
         var methodName = methodElement.name().toString();
         String[] terms = methodName.split("_");
+
+
 
         if (terms.length < 2) {
             throw new IllegalArgumentException(

@@ -1,4 +1,4 @@
-package com.github.diegonighty.kaya.storage.query;
+package com.github.diegonighty.kaya.storage.query.io;
 
 import com.github.diegonighty.kaya.storage.processor.element.RepositoryMethodElement;
 
@@ -15,6 +15,26 @@ public record PrintContext(RepositoryMethodElement method, StringBuilder builder
     static final String QUOTE = "\"";
     static final String RETURN = "return";
     static final String TAB = "\t";
+    static final String START_BRACKET = "{";
+    static final String END_BRACKET = "}";
+
+    public PrintContext printMethodDeclaration() {
+        return print("public").space()
+                .print(method.returnType()).space()
+                .print(method.name())
+                .printParameters().space()
+                .printStartBracket()
+                .printTab();
+    }
+
+    public PrintContext printStartBracket() {
+        return print(START_BRACKET).endLine()
+                .printTab();
+    }
+
+    public PrintContext printEndBracket() {
+        return printTab().print(END_BRACKET).endLine();
+    }
 
     public PrintContext printParameters() {
         List<String> parameters = new ArrayList<>();

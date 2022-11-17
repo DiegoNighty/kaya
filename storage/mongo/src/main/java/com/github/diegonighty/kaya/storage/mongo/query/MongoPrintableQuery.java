@@ -1,7 +1,7 @@
 package com.github.diegonighty.kaya.storage.mongo.query;
 
-import com.github.diegonighty.kaya.storage.query.PrintContext;
-import com.github.diegonighty.kaya.storage.query.PrintableQuery;
+import com.github.diegonighty.kaya.storage.query.io.PrintContext;
+import com.github.diegonighty.kaya.storage.query.io.PrintableQuery;
 import com.github.diegonighty.kaya.storage.query.QueryContext;
 
 import java.util.List;
