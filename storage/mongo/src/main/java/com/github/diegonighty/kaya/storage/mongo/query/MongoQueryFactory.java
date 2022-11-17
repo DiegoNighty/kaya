@@ -49,12 +49,19 @@ public class MongoQueryFactory implements QueryFactory {
 
         int operatorChanges = 0;
         int index = 0;
+        int nestedTo = -1;
+        boolean skipComma = false;
 
         while (filter.hasNext()) {
             String term = filter.next().toLowerCase();
 
+            if (index < nestedTo) {
+                continue;
+            }
+
             if (!LOGICAL_OPERATORS.contains(term)) {
                 int nextOperatorIndex = index + 1;
+                StringBuilder variable = new StringBuilder(term);
 
                 if (filter.hasNext() && terms.size() > nextOperatorIndex) {
                     String nextOperator = terms.get(nextOperatorIndex).toLowerCase();
@@ -66,17 +73,29 @@ public class MongoQueryFactory implements QueryFactory {
 
                         previousOperator = nextOperator;
                         operatorChanges++;
+                    } else {
+                        nestedTo = nextOperatorIndex;
+
+                        while (nestedTo < terms.size() && !LOGICAL_OPERATORS.contains(terms.get(nestedTo).toLowerCase())) {
+                            variable.append(".get").append(terms.get(nestedTo)).append("()");
+                            nestedTo++;
+                        }
+
+                        if (nestedTo == terms.size()) {
+                            skipComma = true;
+                        }
                     }
                 }
 
-                builder.append("Filters.eq(\"").append(term).append("\", ").append(term).append(")");
+                builder.append("Filters.eq(\"").append(term).append("\", ").append(variable).append(")");
 
-                if (filter.hasNext()) {
+                if (filter.hasNext() && !skipComma) {
                     builder.append(", ");
                 }
             }
 
             index++;
+            skipComma = false;
         }
 
         return builder.append(")".repeat(operatorChanges))
