@@ -1,8 +1,10 @@
 package com.github.diegonighty.kaya.storage.mongo;
 
-import com.github.diegonighty.kaya.storage.mongo.query.MongoQueryFactory;
+import com.github.diegonighty.kaya.storage.mongo.query.MongoFilterSequence;
+import com.github.diegonighty.kaya.storage.mongo.query.MongoPrintableQuery;
 import com.github.diegonighty.kaya.storage.mongo.repository.MongoRepository;
 import com.github.diegonighty.kaya.storage.processor.RepositoryProcessor;
+import com.github.diegonighty.kaya.storage.query.DefaultQueryFactory;
 import com.github.diegonighty.kaya.storage.query.QueryFactory;
 
 import java.util.List;
@@ -16,7 +18,7 @@ public class MongoRepositoryProcessor extends RepositoryProcessor<MongoRepositor
 
     @Override
     protected QueryFactory getFactory() {
-        return new MongoQueryFactory();
+        return new DefaultQueryFactory(MongoFilterSequence::create, MongoPrintableQuery::new);
     }
 
     @Override
