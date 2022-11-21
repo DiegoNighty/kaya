@@ -44,7 +44,7 @@ public abstract class AbstractPrintableQuery implements PrintableQuery {
         printer.printEndBracket();
     }
 
-    protected void checkIfReturnsEntityList(BodyContext ctx) {
+    protected void expectsReturnsEntity(BodyContext ctx) {
         var specification = ctx.specification();
         var entityClazz = ctx.repository().entityClazz();
 
@@ -53,13 +53,21 @@ public abstract class AbstractPrintableQuery implements PrintableQuery {
                 .ifNotThrow((expected) -> new ReturnTypeError(specification, expected));
     }
 
-    protected void checkIfReturnsList(BodyContext ctx) {
+    protected void expectsReturnsEntityList(BodyContext ctx) {
         var specification = ctx.specification();
         var entityClazz = ctx.repository().entityClazz();
 
         specification.returnTypeChecker()
                 .is(List.class, entityClazz)
                 .ifNotThrow((expected) -> new ReturnTypeError(specification, expected));
+    }
+
+    protected void expectsReturns(BodyContext ctx, Class<?> expected) {
+        var specification = ctx.specification();
+
+        specification.returnTypeChecker()
+                .is(expected)
+                .ifNotThrow((expectedClazz) -> new ReturnTypeError(specification, expectedClazz));
     }
 
     protected abstract void loadPrinters();

@@ -3,6 +3,7 @@ package com.github.diegonighty.kaya.storage.mongo.query;
 import com.github.diegonighty.kaya.storage.query.QueryContext;
 import com.github.diegonighty.kaya.storage.query.io.AbstractPrintableQuery;
 import com.github.diegonighty.kaya.storage.query.io.MethodPrinter;
+import com.github.diegonighty.kaya.storage.query.io.body.BodyContext;
 
 public class MongoPrintableQuery extends AbstractPrintableQuery {
 
@@ -17,38 +18,44 @@ public class MongoPrintableQuery extends AbstractPrintableQuery {
     @Override
     protected void loadPrinters() {
         addPrinter(FIND_MANY, (bodyCtx) -> {
-            checkIfReturnsList(bodyCtx);
+            expectsReturnsEntityList(bodyCtx);
 
-            MethodPrinter printer = bodyCtx.printer();
-            QueryContext queryCtx = context();
-
-            printer.printReturn()
-                    .print(bodyCtx.sourceVariable()).print(".").print(queryCtx.method())
-                    .printStartParenthesis()
-                    .print(queryCtx.filter())
-                    .printEndParenthesis()
+            printTemplate(bodyCtx, bodyCtx.printer(), context())
                     .print(".into(new ArrayList<>())")
                     .printEndLineCode();
         });
 
         addPrinter(FIND_ONE, (bodyCtx) -> {
-            checkIfReturnsEntityList(bodyCtx);
+            expectsReturnsEntity(bodyCtx);
 
-            MethodPrinter printer = bodyCtx.printer();
-            QueryContext queryCtx = context();
-
-            printer.printReturn()
-                    .print(bodyCtx.sourceVariable()).print(".").print(queryCtx.method())
-                    .printStartParenthesis()
-                    .print(queryCtx.filter())
-                    .printEndParenthesis()
+            printTemplate(bodyCtx, bodyCtx.printer(), context())
                     .print(".first()")
+                    .printEndLineCode();
+        });
+
+        addPrinter(DELETE_MANY, (bodyCtx) -> {
+            expectsReturns(bodyCtx, long.class);
+
+            printTemplate(bodyCtx, bodyCtx.printer(), context(), DELETE_MANY)
+                    .print(".getDeletedCount()")
                     .printEndLineCode();
         });
     }
 
     @Override
     protected String getName() {
-        return "Mongo";
+        return "MongoRepository";
+    }
+
+    private MethodPrinter printTemplate(BodyContext bodyCtx, MethodPrinter printer, QueryContext queryCtx) {
+        return printTemplate(bodyCtx, printer, queryCtx, queryCtx.method());
+    }
+
+    private MethodPrinter printTemplate(BodyContext bodyCtx, MethodPrinter printer, QueryContext queryCtx, String method) {
+        return printer.printReturn()
+                .print(bodyCtx.sourceVariable()).print(".").print(method)
+                .printStartParenthesis()
+                .print(queryCtx.filter())
+                .printEndParenthesis();
     }
 }

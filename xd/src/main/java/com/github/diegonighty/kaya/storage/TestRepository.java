@@ -12,6 +12,8 @@ public interface TestRepository extends MongoRepository<TestEntity, String> {
 
     TestEntity findOneByName(String name);
 
+    long deleteManyByName(String name);
+
     List<TestEntity> findManyByName(String name);
 
     TestEntity findOneByNestedNestedValue(TestEntity.Nested nested);

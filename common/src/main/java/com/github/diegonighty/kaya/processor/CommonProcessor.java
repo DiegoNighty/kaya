@@ -13,8 +13,10 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -95,13 +97,7 @@ public abstract class CommonProcessor<A extends Annotation> extends AbstractProc
     }
 
     public boolean is(TypeMirror mirror, TypeMirror toEqual) {
-        var returnType = (DeclaredType) mirror;
-        var returnElement = (TypeElement) returnType.asElement();
-
-        var toEqualType = (DeclaredType) toEqual;
-        var toEqualName = (TypeElement) toEqualType.asElement();
-
-        return returnElement.getQualifiedName().toString().equals(toEqualName.getQualifiedName().toString());
+        return mirror.toString().equals(toEqual.toString());
     }
 
     public boolean isWithSameWildcards(TypeMirror mirror, TypeMirror clazz) {
@@ -140,13 +136,20 @@ public abstract class CommonProcessor<A extends Annotation> extends AbstractProc
     }
 
     public TypeMirror fromClass(Class<?> clazz) {
-        return processingEnv.getElementUtils().getTypeElement(clazz.getCanonicalName()).asType();
+        if (clazz.isPrimitive()) {
+            String primitiveName = clazz.getName().toUpperCase();
+            TypeKind primitiveKind = TypeKind.valueOf(primitiveName);
+
+            return typeUtils().getPrimitiveType(primitiveKind);
+        }
+
+        return elementUtils().getTypeElement(clazz.getCanonicalName()).asType();
     }
 
     public TypeMirror fromWildcardClass(Class<?> clazz, Class<?>... wildcards) {
-        TypeElement element = processingEnv.getElementUtils().getTypeElement(clazz.getCanonicalName());
+        TypeElement element = elementUtils().getTypeElement(clazz.getCanonicalName());
 
-        return processingEnv.getTypeUtils().getDeclaredType(
+        return typeUtils().getDeclaredType(
                 element,
                 Arrays.stream(wildcards)
                         .map(this::fromClass)
@@ -155,9 +158,9 @@ public abstract class CommonProcessor<A extends Annotation> extends AbstractProc
     }
 
     public TypeMirror fromWildcardClass(Class<?> clazz, TypeMirror... wildcards) {
-        TypeElement element = processingEnv.getElementUtils().getTypeElement(clazz.getCanonicalName());
+        TypeElement element = elementUtils().getTypeElement(clazz.getCanonicalName());
 
-        return processingEnv.getTypeUtils().getDeclaredType(
+        return typeUtils().getDeclaredType(
                 element,
                 wildcards
         );
@@ -175,8 +178,12 @@ public abstract class CommonProcessor<A extends Annotation> extends AbstractProc
         return processingEnv.getElementUtils();
     }
 
+    protected Types typeUtils() {
+        return processingEnv.getTypeUtils();
+    }
+
     protected boolean isAssignable(TypeMirror type, Class<?> clazz) {
-        return processingEnv.getTypeUtils().isAssignable(type, fromClass(clazz));
+        return typeUtils().isAssignable(type, fromClass(clazz));
     }
 
     protected boolean isAssignableWithoutWildcard(TypeMirror type, Class<?> clazz) {
