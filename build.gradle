@@ -10,9 +10,6 @@ allprojects {
     }
 
     dependencies {
-        implementation(libs.reactor.core)
-        testImplementation(testLibs.reactor.test)
-
         testImplementation(testLibs.junit.api)
         testRuntimeOnly(testLibs.junit.engine)
     }

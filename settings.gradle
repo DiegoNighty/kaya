@@ -32,11 +32,5 @@ dependencyResolutionManagement {
         }
     }
 }
-include 'storage'
-include 'storage:core'
-findProject(':storage:core')?.name = 'core'
-include 'storage:mongo'
-findProject(':storage:mongo')?.name = 'mongo'
-include 'common'
-include 'xd'
 
+include("common", "storage", "storage:core", "storage:mongo")
