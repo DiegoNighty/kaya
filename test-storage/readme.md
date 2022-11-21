@@ -23,7 +23,7 @@ the id can be any type, but it must be serializable
 public record Person(UUID id) {}
 ```
 
-Create a interface that extends an implementation of [**repository**](https://github.com/DiegoNighty/kaya/blob/main/storage/core/src/main/java/com/github/diegonighty/kaya/storage/repository/Repository.java)
+Create an interface that extends an implementation of [**repository**](https://github.com/DiegoNighty/kaya/blob/main/storage/core/src/main/java/com/github/diegonighty/kaya/storage/repository/Repository.java)
 for example [**MongoRepository**](https://github.com/DiegoNighty/kaya/blob/main/storage/mongo/src/main/java/com/github/diegonighty/kaya/storage/mongo/repository/MongoRepository.java)
 and annotate it with [@MongoRepositoryAnnotation](https://github.com/DiegoNighty/kaya/blob/main/storage/mongo/src/main/java/com/github/diegonighty/kaya/storage/mongo/repository/MongoRepositoryAnnotation.java)
 ```java
