@@ -3,7 +3,7 @@ package com.github.diegonighty.kaya.storage.query;
 import com.github.diegonighty.kaya.storage.error.InvalidMethodNameError;
 import com.github.diegonighty.kaya.storage.processor.element.RepositoryMethodElement;
 import com.github.diegonighty.kaya.storage.query.filter.FilterSequence;
-import com.github.diegonighty.kaya.storage.query.io.PrintableQuery;
+import com.github.diegonighty.kaya.storage.query.printer.PrintableQuery;
 
 import java.util.Arrays;
 

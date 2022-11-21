@@ -1,4 +1,4 @@
-package com.github.diegonighty.kaya.storage.query.io;
+package com.github.diegonighty.kaya.storage.query.printer;
 
 import com.github.diegonighty.kaya.storage.processor.element.RepositoryElement;
 import com.github.diegonighty.kaya.storage.processor.element.RepositoryMethodElement;

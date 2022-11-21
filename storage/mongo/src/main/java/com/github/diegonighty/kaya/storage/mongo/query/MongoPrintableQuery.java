@@ -1,9 +1,9 @@
 package com.github.diegonighty.kaya.storage.mongo.query;
 
 import com.github.diegonighty.kaya.storage.query.QueryContext;
-import com.github.diegonighty.kaya.storage.query.io.AbstractPrintableQuery;
-import com.github.diegonighty.kaya.storage.query.io.MethodPrinter;
-import com.github.diegonighty.kaya.storage.query.io.body.BodyContext;
+import com.github.diegonighty.kaya.storage.query.printer.AbstractPrintableQuery;
+import com.github.diegonighty.kaya.storage.query.printer.MethodPrinter;
+import com.github.diegonighty.kaya.storage.query.printer.body.BodyContext;
 
 public class MongoPrintableQuery extends AbstractPrintableQuery {
 

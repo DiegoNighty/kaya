@@ -1,4 +1,4 @@
-package com.github.diegonighty.kaya.storage.query.io.body;
+package com.github.diegonighty.kaya.storage.query.printer.body;
 
 public interface BodyPrinter {
 

@@ -1,7 +1,7 @@
 package com.github.diegonighty.kaya.storage.query;
 
 import com.github.diegonighty.kaya.storage.processor.element.RepositoryMethodElement;
-import com.github.diegonighty.kaya.storage.query.io.PrintableQuery;
+import com.github.diegonighty.kaya.storage.query.printer.PrintableQuery;
 
 public interface QueryFactory {
 

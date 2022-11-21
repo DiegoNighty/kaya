@@ -1,4 +1,4 @@
-package com.github.diegonighty.kaya.storage.query.io;
+package com.github.diegonighty.kaya.storage.query.printer;
 
 import com.github.diegonighty.kaya.Obj2;
 import com.github.diegonighty.kaya.storage.error.NotFoundPrintableError;
@@ -6,8 +6,8 @@ import com.github.diegonighty.kaya.storage.error.ReturnTypeError;
 import com.github.diegonighty.kaya.storage.processor.element.RepositoryElement;
 import com.github.diegonighty.kaya.storage.processor.element.RepositoryMethodElement;
 import com.github.diegonighty.kaya.storage.query.QueryContext;
-import com.github.diegonighty.kaya.storage.query.io.body.BodyContext;
-import com.github.diegonighty.kaya.storage.query.io.body.BodyPrinter;
+import com.github.diegonighty.kaya.storage.query.printer.body.BodyContext;
+import com.github.diegonighty.kaya.storage.query.printer.body.BodyPrinter;
 
 import java.util.HashMap;
 import java.util.List;

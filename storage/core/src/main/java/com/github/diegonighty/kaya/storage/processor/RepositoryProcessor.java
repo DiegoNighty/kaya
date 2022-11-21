@@ -9,8 +9,8 @@ import com.github.diegonighty.kaya.storage.processor.element.RepositoryElement;
 import com.github.diegonighty.kaya.storage.processor.element.RepositoryMethodElement;
 import com.github.diegonighty.kaya.storage.processor.element.RepositoryMethodElement.TypeChecker;
 import com.github.diegonighty.kaya.storage.query.QueryFactory;
-import com.github.diegonighty.kaya.storage.query.io.MethodPrinter;
-import com.github.diegonighty.kaya.storage.query.io.PrintableQuery;
+import com.github.diegonighty.kaya.storage.query.printer.MethodPrinter;
+import com.github.diegonighty.kaya.storage.query.printer.PrintableQuery;
 import com.github.diegonighty.kaya.storage.repository.Repository;
 
 import javax.annotation.processing.RoundEnvironment;
