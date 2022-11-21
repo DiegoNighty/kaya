@@ -102,7 +102,7 @@ public class PersonRepositoryImpl implements com.github.diegonighty.person.Perso
 
 but if we want to create our own methods, we can do it
 using the valid [**query methods**](https://github.com/DiegoNighty/kaya/tree/main/storage/mongo/readme.md)
-and **filters** from [**mongodb-driver**](https://mongodb.github.io/mongo-java-driver/4.3/driver/tutorials/fundamentals/crud/#filters)
+and **filters** from [**mongodb-driver**](https://mongodb.github.io/mongo-java-driver/3.6/javadoc/com/mongodb/client/model/Filters.html)
 ```java
 @MongoRepositoryAnnotation
 public interface PersonRepository extends MongoRepository<Person, UUID> {
@@ -168,7 +168,7 @@ the generated query will be
 ```
 
 ## Filters
-if we want to use filters from [**mongodb-driver**](https://mongodb.github.io/mongo-java-driver/4.3/driver/tutorials/fundamentals/crud/#filters)
+if we want to use filters from [**mongodb-driver**](https://mongodb.github.io/mongo-java-driver/3.6/javadoc/com/mongodb/client/model/Filters.html)
 we can do it
 ```java
 @MongoRepositoryAnnotation
