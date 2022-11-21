@@ -1,4 +1,7 @@
-package com.github.diegonighty.kaya;
+package com.github.diegonighty.kaya.processor;
+
+import com.github.diegonighty.kaya.Tuple;
+import com.github.diegonighty.kaya.processor.error.TemplateNotFoundError;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
@@ -16,6 +19,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -50,7 +54,7 @@ public abstract class CommonProcessor<A extends Annotation> extends AbstractProc
     protected void copyFromTemplate(String template, String newName, BiConsumer<BufferedReader, PrintWriter> actions) {
         try (var templateStream = getClass().getClassLoader().getResourceAsStream(template)) {
             if (templateStream == null) {
-                throw new RuntimeException("Template not found: " + template);
+                throw new TemplateNotFoundError(template);
             }
 
             try (var reader = new BufferedReader(new InputStreamReader(templateStream))) {
@@ -86,23 +90,77 @@ public abstract class CommonProcessor<A extends Annotation> extends AbstractProc
         return element.getKind() == kind;
     }
 
+    public boolean is(TypeMirror mirror, Class<?> clazz) {
+        return is(mirror, fromClass(clazz));
+    }
+
+    public boolean is(TypeMirror mirror, TypeMirror toEqual) {
+        var returnType = (DeclaredType) mirror;
+        var returnElement = (TypeElement) returnType.asElement();
+
+        var toEqualType = (DeclaredType) toEqual;
+        var toEqualName = (TypeElement) toEqualType.asElement();
+
+        return returnElement.getQualifiedName().toString().equals(toEqualName.getQualifiedName().toString());
+    }
+
+    public boolean isWithSameWildcards(TypeMirror mirror, TypeMirror clazz) {
+        var returnType = (DeclaredType) mirror;
+        var expectedType = (DeclaredType) clazz;
+
+        var expectedWildcards = returnType.getTypeArguments()
+                .stream()
+                .map(TypeMirror::toString)
+                .collect(toSet())
+                .containsAll(
+                        expectedType.getTypeArguments()
+                                .stream()
+                                .map(TypeMirror::toString)
+                                .collect(toSet())
+                );
+
+        return is(mirror, clazz) && expectedWildcards;
+    }
+
     protected boolean isChild(TypeMirror interfaceChild, TypeMirror toEqual) {
         var declaredType = (DeclaredType) interfaceChild;
         var element = (TypeElement) declaredType.asElement();
 
         var toEqualType = (DeclaredType) toEqual;
-        var toEqualName = toEqualType.asElement().getSimpleName().toString();
+        var toEqualElement = (TypeElement) toEqualType.asElement();
+        var toEqualQualifiedName = toEqualElement.getQualifiedName().toString();
 
         return element.getInterfaces().stream()
                 .map(parentInterface -> (DeclaredType) parentInterface)
                 .map(DeclaredType::asElement)
-                .map(Element::getSimpleName)
+                .map(TypeElement.class::cast)
+                .map(TypeElement::getQualifiedName)
                 .map(Name::toString)
-                .anyMatch(name -> name.equals(toEqualName));
+                .anyMatch(name -> name.equals(toEqualQualifiedName));
     }
 
-    protected TypeMirror fromClass(Class<?> clazz) {
+    public TypeMirror fromClass(Class<?> clazz) {
         return processingEnv.getElementUtils().getTypeElement(clazz.getCanonicalName()).asType();
+    }
+
+    public TypeMirror fromWildcardClass(Class<?> clazz, Class<?>... wildcards) {
+        TypeElement element = processingEnv.getElementUtils().getTypeElement(clazz.getCanonicalName());
+
+        return processingEnv.getTypeUtils().getDeclaredType(
+                element,
+                Arrays.stream(wildcards)
+                        .map(this::fromClass)
+                        .toArray(TypeMirror[]::new)
+        );
+    }
+
+    public TypeMirror fromWildcardClass(Class<?> clazz, TypeMirror... wildcards) {
+        TypeElement element = processingEnv.getElementUtils().getTypeElement(clazz.getCanonicalName());
+
+        return processingEnv.getTypeUtils().getDeclaredType(
+                element,
+                wildcards
+        );
     }
 
     protected Messager messager() {

@@ -44,7 +44,7 @@ public class DefaultQueryFactory implements QueryFactory {
         var filterSequence = filterFactory.create(filter, GETTER_PREFIX);
 
         return queryFactory.create(
-                new QueryContext(terms[METHOD_NAME_INDEX], terms[METHOD_RETURN_TYPE_INDEX], filterSequence.build())
+                QueryContext.create(terms[METHOD_NAME_INDEX], terms[METHOD_RETURN_TYPE_INDEX], filterSequence.build())
         );
     }
 

@@ -49,7 +49,7 @@ public abstract class AbstractFilterSequence implements FilterSequence {
     }
 
     protected boolean isMaxIndex(int index) {
-        return index == filters.length;
+        return index + NEXT_INDEX >= filters.length;
     }
 
     protected void updateOperator(Token previousOperator) {
@@ -79,6 +79,14 @@ public abstract class AbstractFilterSequence implements FilterSequence {
 
     protected void skipOne() {
         skippedTo++;
+    }
+
+    protected boolean hasNext(Token token) {
+        return token != null && !isMaxIndex(token.index());
+    }
+
+    protected int nextIndex(Token token) {
+        return token.index() + NEXT_INDEX;
     }
 
     protected abstract boolean isOperator(String term);

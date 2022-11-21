@@ -1,17 +1,23 @@
 package com.github.diegonighty.kaya.storage;
 
-import com.github.diegonighty.kaya.storage.TestEntity.Nested;
-import com.github.diegonighty.kaya.storage.mongo.repository.MongoReactiveRepository;
 import com.github.diegonighty.kaya.storage.mongo.repository.MongoRepository;
-import reactor.core.publisher.Mono;
+import com.github.diegonighty.kaya.storage.mongo.repository.MongoRepositoryAnnotation;
 
-@MongoRepository
-public interface TestRepository extends MongoReactiveRepository<TestEntity, String> {
+import java.nio.file.attribute.UserPrincipal;
+import java.util.List;
+import java.util.UUID;
 
-    Mono<TestEntity> findOneByAgeOrName(int age, String name);
+@MongoRepositoryAnnotation
+public interface TestRepository extends MongoRepository<TestEntity, String> {
 
-    Mono<TestEntity> findOneByUuidOrCurpOrNameAndLastname(String uuid, String name, String lastname, String curp);
+    TestEntity findOneByName(String name);
 
-    Mono<TestEntity> findOneByNestedNestedValue(Nested nested);
+    List<TestEntity> findManyByName(String name);
+
+    TestEntity findOneByNestedNestedValue(TestEntity.Nested nested);
+
+    TestEntity findOneByUserNameOrUuidAndAge(UserPrincipal user, UUID uuid, int age);
+
+    TestEntity findOneByUuidOrCurpOrNameAndLastname(String uuid, String name, String lastname, String curp);
 
 }

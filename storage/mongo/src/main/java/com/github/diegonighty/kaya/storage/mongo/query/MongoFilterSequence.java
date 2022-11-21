@@ -24,6 +24,7 @@ public class MongoFilterSequence extends AbstractFilterSequence {
     @Override
     public void sequence(SequenceContext context, TokenFinder finder) {
         var currentToken = context.currentToken();
+        var fieldToken = currentToken;
 
         if (!currentToken.isOperator()) {
             var value = new StringBuilder(currentToken.toString());
@@ -63,6 +64,7 @@ public class MongoFilterSequence extends AbstractFilterSequence {
                             value.append(nestedToken);
                         }
 
+                        fieldToken = nestedToken;
                         value.append("()");
                         skipOne();
                     }
@@ -73,7 +75,7 @@ public class MongoFilterSequence extends AbstractFilterSequence {
                 }
             }
 
-            printer.append("Filters.eq(\"").append(currentToken).append("\", ").append(value).append(")");
+            printer.append("Filters.eq(\"").append(fieldToken).append("\", ").append(value).append(")");
 
             if (context.hasNext() && !skipComma()) {
                 printer.append(", ");

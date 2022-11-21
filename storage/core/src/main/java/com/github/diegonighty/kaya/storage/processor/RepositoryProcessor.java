@@ -1,16 +1,17 @@
 package com.github.diegonighty.kaya.storage.processor;
 
-import com.github.diegonighty.kaya.CommonProcessor;
 import com.github.diegonighty.kaya.Tuple;
+import com.github.diegonighty.kaya.processor.CommonProcessor;
+import com.github.diegonighty.kaya.storage.error.TypeMustImplementChildError;
+import com.github.diegonighty.kaya.storage.error.TypeNeedMethodError;
 import com.github.diegonighty.kaya.storage.processor.element.CompletedRepositoryElement;
 import com.github.diegonighty.kaya.storage.processor.element.RepositoryElement;
 import com.github.diegonighty.kaya.storage.processor.element.RepositoryMethodElement;
-import com.github.diegonighty.kaya.storage.query.io.PrintContext;
-import com.github.diegonighty.kaya.storage.query.io.PrintableQuery;
+import com.github.diegonighty.kaya.storage.processor.element.RepositoryMethodElement.TypeChecker;
 import com.github.diegonighty.kaya.storage.query.QueryFactory;
-import com.github.diegonighty.kaya.storage.repository.ReactiveRepository;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import com.github.diegonighty.kaya.storage.query.io.MethodPrinter;
+import com.github.diegonighty.kaya.storage.query.io.PrintableQuery;
+import com.github.diegonighty.kaya.storage.repository.Repository;
 
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
@@ -31,7 +32,7 @@ public abstract class RepositoryProcessor<T extends Annotation> extends CommonPr
         var entityClazz = repositoryElement.entityClazz();
 
         if (!hasMethod(entityClazz, "getId")) {
-            throw new RuntimeException(entityClazz.toString() + " must have an id getter called getId");
+            throw new TypeNeedMethodError(entityClazz, "getId");
         }
 
         var parentElement = repositoryElement.clazz();
@@ -54,12 +55,12 @@ public abstract class RepositoryProcessor<T extends Annotation> extends CommonPr
                     ).forEach(writer::println);
 
                     for (RepositoryMethodElement elementMethod : element.methods()) {
-                        StringBuilder builder = new StringBuilder();
+                        MethodPrinter printer = MethodPrinter.empty();
 
                         PrintableQuery printableQuery = queryFactory.create(elementMethod);
-                        printableQuery.print(new PrintContext(elementMethod, builder, "collection"));
+                        printableQuery.print(printer, elementMethod, repositoryElement, "collection");
 
-                        writer.println(builder);
+                        writer.println(printer);
                     }
 
                     writer.println("}");
@@ -87,14 +88,11 @@ public abstract class RepositoryProcessor<T extends Annotation> extends CommonPr
     private RepositoryMethodElement createRepositoryMethod(ExecutableElement element) {
         var returnType = element.getReturnType();
 
-        if (!isAssignableWithoutWildcard(returnType, Mono.class) && !isAssignableWithoutWildcard(returnType, Flux.class)) {
-            throw new IllegalArgumentException(element + " must return a Mono or Flux");
-        }
-
         return new RepositoryMethodElement(
                 element.getSimpleName(),
-                element.getReturnType(),
-                element.getParameters()
+                returnType,
+                element.getParameters(),
+                createTypeChecker(returnType)
         );
     }
 
@@ -102,9 +100,9 @@ public abstract class RepositoryProcessor<T extends Annotation> extends CommonPr
         var repositoryImplementationElement = (TypeElement) annonymousElement;
         var repositoryTypeElement = repositoryImplementationElement.getInterfaces()
                 .stream()
-                .filter(this::isReactiveRepository)
+                .filter(this::isRepository)
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Repository must implement ReactiveRepository"));
+                .orElseThrow(() -> new TypeMustImplementChildError(repositoryImplementationElement, Repository.class));
 
         var declaredType = (DeclaredType) repositoryTypeElement;
 
@@ -116,8 +114,12 @@ public abstract class RepositoryProcessor<T extends Annotation> extends CommonPr
         );
     }
 
-    private boolean isReactiveRepository(TypeMirror typeMirror) {
-        return isChild(typeMirror, fromClass(ReactiveRepository.class));
+    public TypeChecker.DefaultChecker createTypeChecker(TypeMirror type) {
+        return new TypeChecker.DefaultChecker(type, this);
+    }
+
+    private boolean isRepository(TypeMirror typeMirror) {
+        return isChild(typeMirror, fromClass(Repository.class));
     }
 
     protected abstract QueryFactory getFactory();
