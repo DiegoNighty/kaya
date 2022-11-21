@@ -25,4 +25,9 @@ public class MongoRepositoryProcessor extends RepositoryProcessor<MongoRepositor
     protected String getTemplatePath() {
         return "MongoRepositoryTemplate.java";
     }
+
+    @Override
+    protected String getSourceVariable() {
+        return "collection";
+    }
 }

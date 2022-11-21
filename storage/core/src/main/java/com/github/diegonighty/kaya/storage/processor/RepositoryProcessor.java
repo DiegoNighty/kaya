@@ -58,7 +58,7 @@ public abstract class RepositoryProcessor<T extends Annotation> extends CommonPr
                         MethodPrinter printer = MethodPrinter.empty();
 
                         PrintableQuery printableQuery = queryFactory.create(elementMethod);
-                        printableQuery.print(printer, elementMethod, repositoryElement, "collection");
+                        printableQuery.print(printer, elementMethod, repositoryElement, getSourceVariable());
 
                         writer.println(printer);
                     }
@@ -125,5 +125,7 @@ public abstract class RepositoryProcessor<T extends Annotation> extends CommonPr
     protected abstract QueryFactory getFactory();
 
     protected abstract String getTemplatePath();
+
+    protected abstract String getSourceVariable();
 
 }
