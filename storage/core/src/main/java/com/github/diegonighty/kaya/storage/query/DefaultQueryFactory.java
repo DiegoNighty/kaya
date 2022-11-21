@@ -11,6 +11,7 @@ public class DefaultQueryFactory implements QueryFactory {
 
     //todo: add support for configuration
     static final String GETTER_PREFIX = "get";
+    static final String TERM_REGEX = "(?=\\p{Upper})";
 
     static final int END_OF_METHOD_DECORATORS = 3;
     static final int REQUIRED_METHOD_TERMS = 4;
@@ -30,7 +31,7 @@ public class DefaultQueryFactory implements QueryFactory {
     public PrintableQuery create(RepositoryMethodElement methodElement) {
         var methodName = methodElement.name().toString();
 
-        var terms = methodName.split("(?=\\p{Upper})");
+        var terms = methodName.split(TERM_REGEX);
         var termSize = terms.length;
 
         if (termSize < REQUIRED_METHOD_TERMS) {
