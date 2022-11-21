@@ -16,4 +16,6 @@ public interface PersonRepository extends MongoRepository<Person, UUID> {
 
     long deleteManyByIdOrCredentialNameAndCredentialFolio(Credential credential, UUID id);
 
+    Person findOneByCredentialName(Credential credential);
+
 }

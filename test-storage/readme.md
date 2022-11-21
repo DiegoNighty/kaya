@@ -200,6 +200,21 @@ public long deleteManyByIdOrCredentialNameAndCredentialFolio(com.github.diegonig
 }
 ```
 
+if we want to find first entity we can do it
+```java
+@MongoRepositoryAnnotation
+public interface PersonRepository extends MongoRepository<Person, UUID> {
+    Person findOneByCredentialName(Credential credential);
+}
+```
+the generated query will be
+```java
+@Override
+public com.github.diegonighty.person.Person findOneByCredentialName(com.github.diegonighty.person.Person.Credential credential) {
+	return collection.find(Filters.eq("name", credential.getName())).first();
+}
+```
+
 full example [**here**](https://github.com/DiegoNighty/kaya/blob/main/test-storage/src/main/java/com/github/diegonighty/person/GeneratedPersonRepositoryImpl.java)
 
 

@@ -84,4 +84,9 @@ public class GeneratedPersonRepositoryImpl implements com.github.diegonighty.per
         return collection.deleteMany(Filters.or(Filters.eq("id", id), Filters.and(Filters.eq("name", credential.getName()), Filters.eq("folio", credential.getFolio())))).getDeletedCount();
     }
 
+    @Override
+    public com.github.diegonighty.person.Person findOneByCredentialName(com.github.diegonighty.person.Person.Credential credential) {
+        return collection.find(Filters.eq("name", credential.getName())).first();
+    }
+
 }
