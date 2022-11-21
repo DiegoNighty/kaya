@@ -33,4 +33,5 @@ dependencyResolutionManagement {
     }
 }
 
-include("common", "storage", "storage:core", "storage:mongo")
+include("common", "storage", "storage:core", "storage:mongo", "test-storage")
+
