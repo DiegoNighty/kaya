@@ -1,5 +1,6 @@
 package com.github.diegonighty.kaya.storage.query;
 
+import com.github.diegonighty.kaya.storage.error.InvalidMethodNameError;
 import com.github.diegonighty.kaya.storage.processor.element.RepositoryMethodElement;
 import com.github.diegonighty.kaya.storage.query.filter.FilterSequence;
 import com.github.diegonighty.kaya.storage.query.io.PrintableQuery;
@@ -33,9 +34,7 @@ public class DefaultQueryFactory implements QueryFactory {
         var termSize = terms.length;
 
         if (termSize < REQUIRED_METHOD_TERMS) {
-            throw new IllegalArgumentException(
-                    "Invalid method name: " + methodName + ". Expected: <method><quantity>By<filter> : findOneByName"
-            );
+            throw new InvalidMethodNameError(methodName, REQUIRED_METHOD_TERMS);
         }
 
         var startFilter = termSize - END_OF_METHOD_DECORATORS;
